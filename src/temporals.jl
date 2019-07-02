@@ -14,7 +14,7 @@ struct VideoFile
 
 end
 
-VideoFile() = VideoFile("_", DateTime(0), Nanosecond(1))
+VideoFile() = VideoFile("_", DateTime(1), Nanosecond(1))
 
 start(x::VideoFile) = x.start
 duration(x::VideoFile) = x.duration
