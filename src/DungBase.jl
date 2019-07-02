@@ -1,5 +1,7 @@
 module DungBase
 
+using UUIDs
+
 export VideoFile, WholeVideo, FragmentedVideo, DisjointVideo, AbstractTimeLine, AbstractPeriod, Instantaneous, Prolonged, Temporal, Board, Calibration, POI, Run, Experiment
 
 export start, duration, stop, files, filenames

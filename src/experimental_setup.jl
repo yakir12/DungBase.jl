@@ -38,7 +38,7 @@ struct Run
     setup::Vector{Union{Missing, String}}
     start::DateTime
     comment::String
-    pois::Vector{POI}
+    pois::Dict{Symbol, POI}
 end
 
 struct Experiment

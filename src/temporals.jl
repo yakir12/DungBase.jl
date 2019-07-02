@@ -14,6 +14,8 @@ struct VideoFile
 
 end
 
+VideoFile() = VideoFile("_", DateTime(0), Nanosecond(1))
+
 start(x::VideoFile) = x.start
 duration(x::VideoFile) = x.duration
 stop(x) = start(x) + duration(x)
@@ -24,6 +26,8 @@ struct WholeVideo <: AbstractTimeLine
     file::VideoFile
     comment::String
 end
+
+WholeVideo() = WholeVideo(VideoFile(), "")
 
 files(x::WholeVideo) = [x.file]
 
@@ -38,9 +42,18 @@ struct FragmentedVideo <: AbstractTimeLine
             @assert start(file) == last "there is a gap between two adjacent videos"
             last = stop(file)
         end
+        @assert allunique(getfield.(files, :name)) "all file names must be unique"
         new(files, comment)
     end
 
+end
+
+function FragmentedVideo() 
+    v1 = VideoFile()
+    v2 = copy(v1)
+    v2.name *= "_"
+    v2.start += v1.duration
+    FragmentedVideo([v1, v2], "")
 end
 
 struct DisjointVideo <: AbstractTimeLine
@@ -54,9 +67,18 @@ struct DisjointVideo <: AbstractTimeLine
             @assert start(file) ≥ last "one file starts before the next one ends"
             last = stop(file)
         end
+        @assert allunique(getfield.(files, :name)) "all file names must be unique"
         new(files, comment)
     end
 
+end
+
+function DisjointVideo() 
+    v1 = VideoFile()
+    v2 = copy(v1)
+    v2.name *= "_"
+    v2.start += v1.duration
+    DisjointVideo([v1, v2], "")
 end
 
 files(x::AbstractTimeLine) = x.files
@@ -75,6 +97,8 @@ struct Instantaneous <: AbstractPeriod
     anchor::Nanosecond
 end
 
+Instantaneous() = Instantaneous(Nanosecond(0))
+
 struct Prolonged <: AbstractPeriod
     anchor::Nanosecond
     duration::Nanosecond
@@ -85,6 +109,8 @@ struct Prolonged <: AbstractPeriod
     end
 
 end
+
+Prolonged() = Prolonged(Nanosecond(0), Nanosecond(1))
 
 AbstractPeriod(start, _::Missing) = Instantaneous(start)
 AbstractPeriod(start, stop) = Prolonged(start, Nanosecond(stop) - start)
@@ -105,3 +131,5 @@ struct Temporal{V <: AbstractTimeLine, T <: AbstractPeriod}
 
 end
 Temporal(video::V, time::T, comment::String) where {V <: AbstractTimeLine, T <: AbstractPeriod} = Temporal{V, T}(video, time, comment)
+
+Temporal() = Temporal(WholeVideo(), Instantaneous(), "")
