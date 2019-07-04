@@ -15,9 +15,8 @@ include("pois.jl")
 # include(joinpath(@__DIR__, "experimental_setup.jl"))
 
 struct Run
-    pois::Dict{Symbol, POI}
     setup::Dict{Symbol, Any}
-    date::Date
+    pois::Dict{Symbol, POI}
     comment::String
 end
 

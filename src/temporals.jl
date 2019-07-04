@@ -16,6 +16,8 @@ end
 
 VideoFile() = VideoFile("_", DateTime(1), Nanosecond(1))
 
+VideoFile(vf::VideoFile, args) = VideoFile(get(args, :name, vf.name), get(args, :start, vf.start), get(args, :duration, vf.duration))
+
 start(x::VideoFile) = x.start
 duration(x::VideoFile) = x.duration
 stop(x) = start(x) + duration(x)
@@ -28,6 +30,8 @@ struct WholeVideo <: AbstractTimeLine
 end
 
 WholeVideo() = WholeVideo(VideoFile(), "")
+
+WholeVideo(wv::WholeVideo, args) = WholeVideo(get(args, :files, VideoFile(wv.file, args)), get(args, :comment, wv.comment))
 
 files(x::WholeVideo) = [x.file]
 
@@ -56,6 +60,8 @@ function FragmentedVideo()
     FragmentedVideo([v1, v2], "")
 end
 
+FragmentedVideo(fv::FragmentedVideo, args) = FragmentedVideo(get(args, :files, fv.files), get(args, :comment, fv.comment))
+
 struct DisjointVideo <: AbstractTimeLine
     files::Vector{VideoFile}
     comment::String
@@ -80,6 +86,8 @@ function DisjointVideo()
     v2.start += v1.duration
     DisjointVideo([v1, v2], "")
 end
+
+DisjointVideo(fv::DisjointVideo, args) = DisjointVideo(get(args, :files, fv.files), get(args, :comment, fv.comment))
 
 files(x::AbstractTimeLine) = x.files
 

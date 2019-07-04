@@ -1,5 +1,5 @@
 struct POI{V <: AbstractTimeLine, T <: AbstractPeriod}
-    calib::Calibration
+    calib::Vector{Calibration}
     temporal::Temporal{V, T}
     spatial::UUID
 end
