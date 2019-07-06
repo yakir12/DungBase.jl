@@ -1,111 +1,51 @@
-using Dates
-
-struct VideoFile
-    name::String
-    start::DateTime
+struct Interval
+    start::Nanosecond
     duration::Nanosecond
 
-    function VideoFile(name, start, duration)
-        @assert !isempty(name) "file name is empty"
-        @assert start > DateTime(0) "starting date & time must be larger than zero"
-        @assert duration > Nanosecond(0) "zero duration is not supported"
-        new(name, start, duration)
+    function Interval(start, duration)
+        @assert start ≥ Nanosecond(0) "period start must be positive"
+        @assert duration > Nanosecond(0) "period duration must be larger than zero"
+        new(start, duration)
     end
 
 end
 
-VideoFile() = VideoFile("_", DateTime(1), Nanosecond(1))
+start(x::Interval) = x.start
+duration(x::Interval) = x.duration
 
-VideoFile(vf::VideoFile, args) = VideoFile(get(args, :name, vf.name), get(args, :start, vf.start), get(args, :duration, vf.duration))
+Interval() = Interval(Nanosecond(0), Nanosecond(1))
+Interval(p::Interval, args) = Interval(get(args, :start, start(p)), get(args, :duration, duration(p)))
 
-start(x::VideoFile) = x.start
-duration(x::VideoFile) = x.duration
-stop(x) = start(x) + duration(x)
-
-abstract type AbstractTimeLine end
-
-struct WholeVideo <: AbstractTimeLine
-    file::VideoFile
-    comment::String
-end
-
-WholeVideo() = WholeVideo(VideoFile(), "")
-
-WholeVideo(wv::WholeVideo, args) = WholeVideo(get(args, :files, VideoFile(wv.file, args)), get(args, :comment, wv.comment))
-
-files(x::WholeVideo) = [x.file]
-
-struct FragmentedVideo <: AbstractTimeLine
-    files::Vector{VideoFile}
+struct Temporal{V <: AbstractVideo}
+    video::V
+    time::Interval
     comment::String
 
-    function FragmentedVideo(files, comment) 
-        @assert length(files) > 1 "video collection must include more than one file"
-        last = stop(files[1])
-        for file in files[2:end]
-            @assert start(file) == last "there is a gap between two adjacent videos"
-            last = stop(file)
-        end
-        @assert allunique(getfield.(files, :name)) "all file names must be unique"
-        new(files, comment)
+    function Temporal{V}(video, time, comment) where {V <: AbstractVideo}
+        @assert stop(time) ≤ duration(video) "POIs are outside the video's timeline"
+        new(video, time, comment)
     end
 
 end
+Temporal(video::V, time::Interval, comment::String) where {V <: AbstractVideo} = Temporal{V}(video, time, comment)
 
-function FragmentedVideo() 
-    v1 = VideoFile()
-    v2 = copy(v1)
-    v2.name *= "_"
-    v2.start += v1.duration
-    FragmentedVideo([v1, v2], "")
-end
+Temporal() = Temporal(WholeVideo(), Instantaneous(), "")
 
-FragmentedVideo(fv::FragmentedVideo, args) = FragmentedVideo(get(args, :files, fv.files), get(args, :comment, fv.comment))
+Temporal(t::Temporal{V}, args) where {V <: AbstractVideo} = Temporal(get(args, :video, V(t.video, args)), get(args, :time, T(t.time, args)), get(args, :comment, t.comment))
 
-struct DisjointVideo <: AbstractTimeLine
-    files::Vector{VideoFile}
-    comment::String
 
-    function DisjointVideo(files, comment) 
-        @assert length(files) > 1 "video collection must include more than one file"
-        last = stop(files[1])
-        for file in files[2:end]
-            @assert start(file) ≥ last "one file starts before the next one ends"
-            last = stop(file)
-        end
-        @assert allunique(getfield.(files, :name)) "all file names must be unique"
-        new(files, comment)
-    end
 
-end
 
-function DisjointVideo() 
-    v1 = VideoFile()
-    v2 = copy(v1)
-    v2.name *= "_"
-    v2.start += v1.duration
-    DisjointVideo([v1, v2], "")
-end
 
-DisjointVideo(fv::DisjointVideo, args) = DisjointVideo(get(args, :files, fv.files), get(args, :comment, fv.comment))
-
-files(x::AbstractTimeLine) = x.files
-
-filenames(x::AbstractTimeLine) = getfield.(files(x), :name)
-
-start(x::WholeVideo) = start(x.file)
-start(x::AbstractTimeLine) = start(first(x.files))
-duration(x::WholeVideo) = duration(x.file)
-duration(x::FragmentedVideo) = sum(duration, x.files)
-duration(x::DisjointVideo) = stop(last(x.files)) - start(first(x.files))
-
-abstract type AbstractPeriod end
+#=abstract type AbstractPeriod end
 
 struct Instantaneous <: AbstractPeriod
     anchor::Nanosecond
 end
 
 Instantaneous() = Instantaneous(Nanosecond(0))
+
+Instantaneous(i::Instantaneous, args) = Instantaneous(get(args, :anchor, i.anchor))
 
 struct Prolonged <: AbstractPeriod
     anchor::Nanosecond
@@ -119,6 +59,8 @@ struct Prolonged <: AbstractPeriod
 end
 
 Prolonged() = Prolonged(Nanosecond(0), Nanosecond(1))
+
+Prolonged(p::Prolonged, args) = Prolonged(get(args, :anchor, p.anchor), get(args, :duration, p.duration))
 
 AbstractPeriod(start, _::Missing) = Instantaneous(start)
 AbstractPeriod(start, stop) = Prolonged(start, Nanosecond(stop) - start)
@@ -141,3 +83,5 @@ end
 Temporal(video::V, time::T, comment::String) where {V <: AbstractTimeLine, T <: AbstractPeriod} = Temporal{V, T}(video, time, comment)
 
 Temporal() = Temporal(WholeVideo(), Instantaneous(), "")
+
+Temporal(t::Temporal{V,T}, args) where {V <: AbstractTimeLine, T <: AbstractPeriod} = Temporal(get(args, :video, V(t.video, args)), get(args, :time, T(t.time, args)), get(args, :comment, t.comment))=#
