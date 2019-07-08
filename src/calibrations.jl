@@ -26,6 +26,7 @@ struct Calibration{T, S}
 end
 
 Calibration() = Calibration(missing, Temporal(), Board(), "")
+Calibration(c::Calibration, args) = Calibration(get(args, :intrinsic, c.intrinsic), get(args, :extrinsic, c.extrinsic), get(args, :board, c.board), get(args, :comment, c.comment))
 
 filenames(c::Calibration) = first(filenames(c.extrinsic.video))
 start(c::Calibration) = start(c.extrinsic.time)

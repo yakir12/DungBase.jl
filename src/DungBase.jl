@@ -1,10 +1,14 @@
 module DungBase
 
-using UUIDs
+using UUIDs, Dates
 
 export VideoFile, WholeVideo, FragmentedVideo, DisjointVideo, AbstractTimeLine, AbstractPeriod, Instantaneous, Prolonged, Temporal, Board, Calibration, POI, Run, Experiment
 
 export start, duration, stop, files, filenames
+
+stop(x) = start(x) + duration(x)
+
+include("videos.jl")
 
 include("temporals.jl")
 
