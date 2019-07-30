@@ -30,17 +30,17 @@ WholeVideo() = WholeVideo(VideoFile(), "")
 
 WholeVideo(wv::WholeVideo, args) = WholeVideo(get(args, :files, VideoFile(wv.file, args)), get(args, :comment, wv.comment))
 
-files(x::WholeVideo) = [x.file]
+files(x::WholeVideo) = SVector{1, VideoFile}(x.file)
 
-struct FragmentedVideo <: AbstractTimeLine
-    files::Vector{VideoFile}
+struct FragmentedVideo{N, SV <: SVector{N, VideoFile}} <: AbstractTimeLine
+    files::SV
     comment::String
 
-    function FragmentedVideo(files, comment) 
-        @assert length(files) > 1 "video collection must include more than one file"
+    function FragmentedVideo{N, SV}(files, comment) where {N, SV <: SVector{N, VideoFile}}
+        @assert N > 1 "video collection must include more than one file"
         last = stop(files[1])
-        for file in files[2:end]
-            @assert start(file) == last "there is a gap between two adjacent videos"
+        for file in files[2:N]
+            @assert start(file) == last "there is a gap between two adjacent videos: $(start(file) - last)" 
             last = stop(file)
         end
         @assert allunique(getfield.(files, :name)) "all file names must be unique"
@@ -48,6 +48,13 @@ struct FragmentedVideo <: AbstractTimeLine
     end
 
 end
+FragmentedVideo(files::SV, comment::String) where {N, SV <: SVector{N, VideoFile}} = FragmentedVideo{N, SV}(files, comment)
+
+function FragmentedVideo(files::T, comment::String) where {T <: AbstractVector{VideoFile}}
+    n = length(files)
+    FragmentedVideo(SVector{n, VideoFile}(files), comment)
+end
+
 
 function FragmentedVideo() 
     v1 = VideoFile()
@@ -57,21 +64,28 @@ end
 
 FragmentedVideo(fv::FragmentedVideo, args) = FragmentedVideo(get(args, :files, fv.files), get(args, :comment, fv.comment))
 
-struct DisjointVideo <: AbstractTimeLine
-    files::Vector{VideoFile}
+struct DisjointVideo{N, SV <: SVector{N, VideoFile}} <: AbstractTimeLine
+    files::SV
     comment::String
 
-    function DisjointVideo(files, comment) 
-        @assert length(files) > 1 "video collection must include more than one file"
+    function DisjointVideo{N, SV}(files, comment) where {N, SV <: SVector{N, VideoFile}}
+        n = length(files)
+        @assert n > 1 "video collection must include more than one file"
         last = stop(files[1])
         for file in files[2:end]
             @assert start(file) ≥ last "one file starts before the next one ends"
             last = stop(file)
         end
         @assert allunique(getfield.(files, :name)) "all file names must be unique"
-        new(files, comment)
+        new(SVector{n}(files), comment)
     end
 
+end
+DisjointVideo(files::SV, comment::String) where {N, SV <: SVector{N, VideoFile}} = DisjointVideo{N, SV}(files, comment)
+
+function DisjointVideo(files::T, comment::String) where {T <: AbstractVector{VideoFile}}
+    n = length(files)
+    DisjointVideo(SVector{n, VideoFile}(files), comment)
 end
 
 function DisjointVideo() 
