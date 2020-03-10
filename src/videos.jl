@@ -3,13 +3,18 @@ struct VideoFile
     start::DateTime
     duration::Millisecond
 
-    function VideoFile(name, start, duration)
+    function VideoFile(name, start, duration::Millisecond)
         @assert !isempty(name) "file name is empty"
         @assert start > DateTime(0) "starting date & time must be larger than zero"
         @assert duration > Millisecond(0) "zero duration is not supported"
         new(name, start, duration)
     end
 
+end
+
+function VideoFile(name, start, duration::T) where T <: TimePeriod
+    ms = duration/convert(T, Millisecond(1))
+    VideoFile(name, start, Millisecond(round(Int, ms)))
 end
 
 VideoFile() = VideoFile("_", DateTime(1), Millisecond(1))
