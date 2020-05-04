@@ -1,7 +1,7 @@
 name = "DungBase"
 uuid = "bd6f3a87-2f53-57d0-9c4e-5625ef189a5e"
 authors = ["yakir12 <12.yakir@gmail.com>"]
-version = "0.4.0"
+version = "0.2.0"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
@@ -10,7 +10,8 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 
 [compat]
-IntervalSets = "0.3.2"
+IntervalSets = "0.5.0"
+StaticArrays = "0.12.0"
 julia = "^1"
 
 [extras]
