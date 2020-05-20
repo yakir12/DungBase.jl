@@ -8,14 +8,6 @@ const Point = SVector{2, Float64}
 point(x::Missing) = x
 point(x::Instantaneous)= Point(x.data[1], x.data[2])
 
-mutable struct Common{N}
-    feeder::Point
-    nest::Point
-    track::Track
-    pellet::PointCollection
-    originalnest::N
-end
-
 _getv(spl, k) = SVector{2, Float64}(derivative(spl, k))
 
 function gettpindex(spl, ks)
@@ -104,4 +96,12 @@ homing(t::Track) = t.coords[1:t.tp]
 searching(t::Track) = t.coords[t.tp:end]
 searchcenter(t::Track) = mean(searching(t))
 turningpoint(t::Track) = t.coords[t.tp]
+
+mutable struct Common{N}
+    feeder::Point
+    nest::Point
+    track::Track
+    pellet::PointCollection
+    originalnest::N
+end
 
