@@ -1,12 +1,4 @@
 
-mutable struct Common{N}
-    feeder::Point
-    nest::Point
-    track::Track
-    pellet::PointCollection
-    originalnest::N
-end
-
 const ignorefirst = 10 # cm
 const bigturn = π/3 # 60°
 # const smallturn = π/93 # 60°
@@ -15,6 +7,14 @@ const s = 500
 const Point = SVector{2, Float64}
 point(x::Missing) = x
 point(x::Instantaneous)= Point(x.data[1], x.data[2])
+
+mutable struct Common{N}
+    feeder::Point
+    nest::Point
+    track::Track
+    pellet::PointCollection
+    originalnest::N
+end
 
 _getv(spl, k) = SVector{2, Float64}(derivative(spl, k))
 
