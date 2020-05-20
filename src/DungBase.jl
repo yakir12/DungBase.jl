@@ -4,9 +4,9 @@ using Dates, UUIDs, StaticArrays
 import IntervalSets: width, (..), AbstractInterval, leftendpoint
 using StatsBase, StructArrays, Dierckx, AngleBetweenVectors, LinearAlgebra
 
-export VideoFile, WholeVideo, FragmentedVideo, DisjointVideo, AbstractTimeLine, AbstractPeriod, Instantaneous, Prolonged, Temporal, Board, Calibration, POI, Metadata, Run, Experiment, Track, Common, Point
+export VideoFile, WholeVideo, FragmentedVideo, DisjointVideo, AbstractTimeLine, AbstractPeriod, Instantaneous, Prolonged, Temporal, Board, Calibration, POI, Metadata, Run, Experiment, Track, Common, Point, PointCollection
 
-export start, duration, stop, files, filenames
+export start, duration, stop, files, filenames, point, pointcollection
 
 stop(x) = start(x) + duration(x)
 
