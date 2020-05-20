@@ -3,7 +3,7 @@ module DungBase
 using Dates, UUIDs, StaticArrays
 import IntervalSets: width, (..), AbstractInterval, leftendpoint
 
-export VideoFile, WholeVideo, FragmentedVideo, DisjointVideo, AbstractTimeLine, AbstractPeriod, Instantaneous, Prolonged, Temporal, Board, Calibration, POI, Metadata, Run, Experiment
+export VideoFile, WholeVideo, FragmentedVideo, DisjointVideo, AbstractTimeLine, AbstractPeriod, Instantaneous, Prolonged, Temporal, Board, Calibration, POI, Metadata, Run, Experiment, Track, Common
 
 export start, duration, stop, files, filenames
 
