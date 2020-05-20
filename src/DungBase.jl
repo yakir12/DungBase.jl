@@ -2,6 +2,7 @@ module DungBase
 
 using Dates, UUIDs, StaticArrays
 import IntervalSets: width, (..), AbstractInterval, leftendpoint
+using StatsBase, StructArrays, Dierckx, AngleBetweenVectors, LinearAlgebra
 
 export VideoFile, WholeVideo, FragmentedVideo, DisjointVideo, AbstractTimeLine, AbstractPeriod, Instantaneous, Prolonged, Temporal, Board, Calibration, POI, Metadata, Run, Experiment, Track, Common
 
@@ -16,6 +17,8 @@ include("temporals.jl")
 include("calibrations.jl")
 
 include("pois.jl")
+
+include("track.jl")
 
 # include(joinpath(@__DIR__, "experimental_setup.jl"))
 

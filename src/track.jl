@@ -1,4 +1,11 @@
-using StatsBase, StaticArrays, StructArrays, Dierckx, AngleBetweenVectors, LinearAlgebra
+
+mutable struct Common{N}
+    feeder::Point
+    nest::Point
+    track::Track
+    pellet::PointCollection
+    originalnest::N
+end
 
 const ignorefirst = 10 # cm
 const bigturn = π/3 # 60°
