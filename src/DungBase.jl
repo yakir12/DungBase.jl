@@ -6,7 +6,7 @@ using StatsBase, StructArrays, Dierckx, AngleBetweenVectors, LinearAlgebra
 
 export VideoFile, WholeVideo, FragmentedVideo, DisjointVideo, AbstractTimeLine, AbstractPeriod, Instantaneous, Prolonged, Temporal, Board, Calibration, POI, Metadata, Run, Experiment, Track, Common, Point, PointCollection
 
-export start, duration, stop, files, filenames, point, pointcollection
+export start, duration, stop, files, filenames, point, pointcollection, homing, searching, searchcenter, turningpoint
 
 stop(x) = start(x) + duration(x)
 
