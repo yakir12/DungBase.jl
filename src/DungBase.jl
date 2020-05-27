@@ -8,8 +8,6 @@ export VideoFile, WholeVideo, FragmentedVideo, DisjointVideo, AbstractTimeLine, 
 
 export start, duration, stop, files, filenames, point, pointcollection, homing, searching, searchcenter, turningpoint
 
-__init__() = @warn "This package is deprecated"
-
 stop(x) = start(x) + duration(x)
 
 include("videos.jl")
