@@ -98,11 +98,12 @@ searching(t::Track) = t.coords[t.tp:end]
 searchcenter(t::Track) = mean(searching(t))
 turningpoint(t::Track) = t.coords[t.tp]
 
-mutable struct Common{N}
-    feeder::Point
-    nest::Point
+mutable struct Common
+    feeder::Union{Missing, Point}
+    nest::Union{Missing, Point}
     track::Track
     pellet::PointCollection
-    originalnest::N
+    ficitive_nest::Point
 end
+Common(feeder::Union{Missing, Point}, nest::Union{Missing, Point}, track::Track, pellet::PointCollection) = Common(feeder, nest, track, pellet, nest)
 
