@@ -103,7 +103,6 @@ mutable struct Common
     nest::Union{Missing, Point}
     track::Track
     pellet::PointCollection
-    ficitive_nest::Point
+    fictive_nest::Point
 end
-Common(feeder::Union{Missing, Point}, nest::Union{Missing, Point}, track::Track, pellet::PointCollection) = Common(feeder, nest, track, pellet, nest)
 
