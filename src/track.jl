@@ -104,5 +104,7 @@ mutable struct Common
     track::Track
     pellet::PointCollection
     fictive_nest::Point
+    pickup::Union{Missing, Point}
+    dropoff::Point
 end
 
