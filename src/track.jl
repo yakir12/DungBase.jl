@@ -5,8 +5,9 @@ const bigturn = π/3 # 60°
 const s = 500
 
 const Point = SVector{2, Float64}
-point(x::Missing) = x
+point(::Missing) = missing
 point(x::Instantaneous)= Point(x.data[1], x.data[2])
+point(x::Point) = x
 
 _getv(spl, k) = SVector{2, Float64}(derivative(spl, k))
 
