@@ -56,7 +56,7 @@ const PointCollection = StructVector{TimedPoint}
 pointcollection(x::Missing, t₀) = StructVector{TimedPoint}(undef, 0)
 pointcollection(x, t₀) = StructVector(TimedPoint(Point(i[1], i[2]), i[3] - t₀) for i in eachrow(x.data))
 
-struct Track
+mutable struct Track
     coords::Vector{Point}
     t::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}
     tp::Int

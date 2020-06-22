@@ -1,7 +1,7 @@
 name = "DungBase"
 uuid = "bd6f3a87-2f53-57d0-9c4e-5625ef189a5e"
 authors = ["yakir12 <12.yakir@gmail.com>"]
-version = "1.0.5"
+version = "1.0.6"
 
 [deps]
 AngleBetweenVectors = "ec570357-d46e-52ed-9726-18773498274d"
