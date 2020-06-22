@@ -25,7 +25,7 @@ function Track(x::Prolonged)
     Δt = mean(trim(diff(xyt[:, 3]), prop = 0.1))
     n = length(raw.xy)
     tl = range(0.0, step = Δt, length = n)
-    spl = ParametricSpline(tl, xyt[:, 1:2]; s = 5, k = 2)
+    spl = ParametricSpline(tl, hcat(raw.xy...); s = 5, k = 2)
     xyl = Point.(spl.(tl))
     Track(xyl, tl, n, raw)
 end
